@@ -1,0 +1,66 @@
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
+import AppShell from "../components/AppShell";
+import MetricCard from "../components/MetricCard";
+import { listInterviews } from "../services/interviewApi";
+
+function Analytics() {
+  const [completed, setCompleted] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadAnalytics() {
+      try {
+        const data = await listInterviews();
+        if (!cancelled) {
+          setCompleted((data.interviews ?? []).filter((interview) => interview.status === "completed"));
+        }
+      } finally {
+        if (!cancelled) {
+          setIsLoading(false);
+        }
+      }
+    }
+
+    loadAnalytics();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const average = (key) =>
+    completed.length
+      ? Math.round(
+          completed.reduce((total, interview) => total + (interview.feedback?.[key] || 0), 0) / completed.length
+        )
+      : 0;
+
+  return (
+    <AppShell>
+      <section>
+        <Link
+          to="/dashboard"
+          className="mb-10 inline-flex items-center gap-2 text-sm font-bold text-white/55 hover:text-[#86ff22]"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back to dashboard
+        </Link>
+        <p className="text-sm font-bold uppercase tracking-[0.25em] text-[#86ff22]">Analytics</p>
+        <h1 className="mt-3 text-4xl font-black tracking-tight">Progress overview</h1>
+        <p className="mt-3 text-white/60">Scores aggregated from AI feedback stored in PostgreSQL.</p>
+      </section>
+
+      <section className="mt-8 grid grid-cols-1 gap-5 md:grid-cols-4">
+        <MetricCard label="Completed" value={isLoading ? "..." : completed.length} />
+        <MetricCard label="Avg technical" value={`${average("technicalScore")}%`} />
+        <MetricCard label="Avg relevance" value={`${average("relevanceScore")}%`} />
+        <MetricCard label="Avg communication" value={`${average("communicationScore")}%`} />
+      </section>
+    </AppShell>
+  );
+}
+
+export default Analytics;
