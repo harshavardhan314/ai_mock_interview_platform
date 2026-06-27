@@ -36,10 +36,10 @@ function Analytics() {
 
   const average = (key) =>
     completed.length
-      ? Math.round(
-          completed.reduce((total, interview) => total + (interview.feedback?.[key] || 0), 0) / completed.length
-        )
-      : 0;
+      ? (
+          completed.reduce((total, interview) => total + Number(interview.feedback?.[key] || 0), 0) / completed.length
+        ).toFixed(1)
+      : "0";
 
   return (
     <AppShell>
@@ -58,9 +58,9 @@ function Analytics() {
 
       <section className="mt-8 grid grid-cols-1 gap-5 md:grid-cols-4">
         <MetricCard label="Completed" value={isLoading ? "..." : completed.length} />
-        <MetricCard label="Avg technical" value={`${average("technicalScore")}%`} />
-        <MetricCard label="Avg relevance" value={`${average("relevanceScore")}%`} />
-        <MetricCard label="Avg communication" value={`${average("communicationScore")}%`} />
+        <MetricCard label="Avg technical" value={`${average("technicalScore")}/10`} />
+        <MetricCard label="Avg relevance" value={`${average("relevanceScore")}/10`} />
+        <MetricCard label="Avg communication" value={`${average("communicationScore")}/10`} />
       </section>
     </AppShell>
   );

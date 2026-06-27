@@ -28,7 +28,7 @@ function InterviewSummaryCard({ interview }) {
           {isComplete ? <CheckCircle2 className="h-4 w-4 text-[#86ff22]" /> : <Clock3 className="h-4 w-4 text-amber-300" />}
           {isComplete ? "Completed" : "In progress"}
         </span>
-        <span className="font-mono text-white/65">{isComplete ? `${interview.score}%` : `${interview.answers.length}/${interview.questions.length}`}</span>
+        <span className="font-mono text-white/65">{isComplete ? `${interview.score}/10` : `${interview.answers.length}/${interview.questions.length}`}</span>
       </div>
     </Link>
   );

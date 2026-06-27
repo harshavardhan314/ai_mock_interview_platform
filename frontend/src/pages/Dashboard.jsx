@@ -42,9 +42,11 @@ function Dashboard() {
 
   const completed = interviews.filter((interview) => interview.status === "completed");
   const averageScore = completed.length
-    ? Math.round(completed.reduce((total, interview) => total + (interview.score || 0), 0) / completed.length)
-    : 0;
-  const bestScore = completed.length ? Math.max(...completed.map((interview) => interview.score || 0)) : 0;
+    ? (completed.reduce((total, interview) => total + Number(interview.score || 0), 0) / completed.length).toFixed(1)
+    : "0";
+  const bestScore = completed.length
+    ? Math.max(...completed.map((interview) => Number(interview.score || 0))).toFixed(1)
+    : "0";
 
   return (
     <AppShell>
@@ -68,9 +70,9 @@ function Dashboard() {
       </section>
 
       <section className="mt-10 grid grid-cols-1 gap-5 md:grid-cols-3">
-        <MetricCard label="Total interviews" value={isLoading ? "..." : interviews.length} helper="Stored in PostgreSQL." />
-        <MetricCard label="Average score" value={`${averageScore}%`} helper="Across completed sessions." />
-        <MetricCard label="Best score" value={`${bestScore}%`} helper="Your strongest mock so far." />
+        <MetricCard label="Total interviews" value={isLoading ? "..." : interviews.length} helper="Interviews taken so Far..." />
+        <MetricCard label="Average score" value={`${averageScore}/10`} helper="Across completed sessions." />
+        <MetricCard label="Best score" value={`${bestScore}/10`} helper="Your strongest mock so far." />
       </section>
 
       <section className="mt-10 grid grid-cols-1 gap-5 lg:grid-cols-3">

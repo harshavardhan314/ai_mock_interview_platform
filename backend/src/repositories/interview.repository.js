@@ -17,6 +17,36 @@ function parseJsonField(value) {
 }
 
 function mapRowToInterview(row) {
+  const normalize = (val) => {
+    if (val == null) return null;
+    let num = Number(val);
+    if (isNaN(num)) return null;
+    if (num > 10) {
+      return Number((num / 10).toFixed(1));
+    }
+    return Number(num.toFixed(1));
+  };
+
+  let score = row.score != null ? normalize(row.score) : null;
+  let feedback = parseJsonField(row.feedback);
+
+  if (feedback) {
+    if (feedback.overallScore != null) feedback.overallScore = normalize(feedback.overallScore);
+    if (feedback.technicalScore != null) feedback.technicalScore = normalize(feedback.technicalScore);
+    if (feedback.communicationScore != null) feedback.communicationScore = normalize(feedback.communicationScore);
+    if (feedback.problemSolvingScore != null) feedback.problemSolvingScore = normalize(feedback.problemSolvingScore);
+    if (feedback.confidenceScore != null) feedback.confidenceScore = normalize(feedback.confidenceScore);
+    if (feedback.relevanceScore != null) feedback.relevanceScore = normalize(feedback.relevanceScore);
+
+    if (Array.isArray(feedback.questionFeedback)) {
+      feedback.questionFeedback.forEach((q) => {
+        if (q.rating != null) {
+          q.rating = normalize(q.rating);
+        }
+      });
+    }
+  }
+
   return {
     id: row.id,
     userId: row.user_id,
@@ -34,8 +64,8 @@ function mapRowToInterview(row) {
     answers: parseJsonField(row.answers),
     currentQuestionIndex: row.current_question_index,
     status: row.status,
-    score: row.score,
-    feedback: parseJsonField(row.feedback),
+    score: score,
+    feedback: feedback,
     createdAt: row.created_at.toISOString(),
     updatedAt: row.updated_at.toISOString(),
     startedAt: row.started_at ? row.started_at.toISOString() : null,

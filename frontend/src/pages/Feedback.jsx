@@ -43,9 +43,43 @@ function Feedback() {
   if (isLoading) {
     return (
       <AppShell>
-        <div className="rounded-2xl border border-white/10 bg-[#121611] p-8 text-center">
-          <Loader2 className="mx-auto h-8 w-8 animate-spin text-[#86ff22]" />
-          <p className="mt-4 text-white/60">Loading feedback report...</p>
+        <div className="min-h-[70vh] flex flex-col items-center justify-center text-center max-w-2xl mx-auto space-y-8 relative z-10 px-4">
+          <style>{`
+            @keyframes borderGlow {
+              0%, 100% { border-color: rgba(134, 255, 34, 0.2); }
+              50% { border-color: rgba(134, 255, 34, 0.6); }
+            }
+            @keyframes progressPulse {
+              0% { width: 0%; }
+              50% { width: 75%; }
+              100% { width: 100%; }
+            }
+          `}</style>
+          
+          <div className="absolute top-[20%] left-[-10%] w-[350px] h-[350px] bg-gradient-to-tr from-[#3d7c00]/30 to-transparent opacity-[0.25] rounded-full blur-[80px] pointer-events-none z-0"></div>
+          
+          <div className="relative z-10 space-y-6">
+            <div className="relative mx-auto w-20 h-20 bg-[rgba(134,255,34,0.06)] border rounded-2xl flex items-center justify-center shadow-lg shadow-[#86ff22]/5 animate-[borderGlow_3s_infinite]" style={{ border: '1px solid rgba(134,255,34,0.2)' }}>
+              <div className="w-12 h-12 rounded-full border-t-2 border-r-2 border-[#86ff22] animate-spin"></div>
+              <div className="absolute inset-0 flex items-center justify-center">
+                <Sparkles className="w-6 h-6 text-[#cfff65] animate-pulse" />
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <span className="text-[#bdee60] text-[10px] font-bold tracking-widest uppercase bg-[rgba(134,255,34,0.1)] px-3 py-1.5 rounded-full">
+                Report Compiling
+              </span>
+              <h2 className="text-3xl font-black text-white tracking-tight">Fetching AI Feedback Report</h2>
+              <p className="text-sm text-white/60 leading-relaxed max-w-md mx-auto">
+                Retrieving candidate performance scores, structural breakdown, strengths, and improvement suggestions...
+              </p>
+            </div>
+
+            <div className="w-64 h-2 bg-black/60 border border-white/[0.05] rounded-full overflow-hidden p-[1px] mx-auto">
+              <div className="h-full bg-gradient-to-r from-[#2a6600] to-[#86ff22] rounded-full animate-[progressPulse_4s_ease-in-out_infinite]" />
+            </div>
+          </div>
         </div>
       </AppShell>
     );
@@ -82,10 +116,10 @@ function Feedback() {
       {feedback ? (
         <>
           <section className="mt-8 grid grid-cols-1 gap-5 md:grid-cols-4">
-            <MetricCard label="Overall" value={`${feedback.overallScore ?? 0}%`} />
-            <MetricCard label="Technical" value={`${feedback.technicalScore ?? 0}%`} />
-            <MetricCard label="Relevance" value={`${feedback.relevanceScore ?? 0}%`} />
-            <MetricCard label="Communication" value={`${feedback.communicationScore ?? 0}%`} />
+            <MetricCard label="Overall" value={`${feedback.overallScore ?? 0}/10`} />
+            <MetricCard label="Technical" value={`${feedback.technicalScore ?? 0}/10`} />
+            <MetricCard label="Relevance" value={`${feedback.relevanceScore ?? 0}/10`} />
+            <MetricCard label="Communication" value={`${feedback.communicationScore ?? 0}/10`} />
           </section>
 
           <section className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-2">

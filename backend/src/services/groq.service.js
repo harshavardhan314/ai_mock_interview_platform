@@ -196,18 +196,20 @@ ${qa || "No answers recorded."}
 
 Scoring criteria: Technical Knowledge, Communication Skills, Problem Solving, Confidence, Relevance to Job Description, Overall Performance.
 
+All scores (overallScore, technicalScore, communicationScore, problemSolvingScore, confidenceScore, relevanceScore, and questionFeedback[].rating) MUST be on a scale of 0 to 10 (inclusive) with up to one decimal place (e.g., 8.5, 9.0, 7.2).
+
 Return ONLY valid JSON:
 {
-  "overallScore": 0,
-  "technicalScore": 0,
-  "communicationScore": 0,
-  "problemSolvingScore": 0,
-  "confidenceScore": 0,
-  "relevanceScore": 0,
+  "overallScore": 8.5,
+  "technicalScore": 9.0,
+  "communicationScore": 8.0,
+  "problemSolvingScore": 7.5,
+  "confidenceScore": 8.0,
+  "relevanceScore": 9.0,
   "strengths": [""],
   "improvements": [""],
   "questionFeedback": [
-    { "question": "", "rating": 0, "feedback": "" }
+    { "question": "", "rating": 8.5, "feedback": "" }
   ],
   "summary": ""
 }`;
@@ -240,6 +242,33 @@ Return ONLY valid JSON:
   const data = await response.json();
   const raw = data.choices?.[0]?.message?.content?.trim() || "{}";
   const feedback = JSON.parse(raw);
+
+  const normalizeScore = (val) => {
+    if (val == null) return null;
+    let num = Number(val);
+    if (isNaN(num)) return null;
+    if (num > 10) {
+      return Number((num / 10).toFixed(1));
+    }
+    return Number(num.toFixed(1));
+  };
+
+  if (feedback) {
+    if (feedback.overallScore != null) feedback.overallScore = normalizeScore(feedback.overallScore);
+    if (feedback.technicalScore != null) feedback.technicalScore = normalizeScore(feedback.technicalScore);
+    if (feedback.communicationScore != null) feedback.communicationScore = normalizeScore(feedback.communicationScore);
+    if (feedback.problemSolvingScore != null) feedback.problemSolvingScore = normalizeScore(feedback.problemSolvingScore);
+    if (feedback.confidenceScore != null) feedback.confidenceScore = normalizeScore(feedback.confidenceScore);
+    if (feedback.relevanceScore != null) feedback.relevanceScore = normalizeScore(feedback.relevanceScore);
+
+    if (Array.isArray(feedback.questionFeedback)) {
+      feedback.questionFeedback.forEach((q) => {
+        if (q.rating != null) {
+          q.rating = normalizeScore(q.rating);
+        }
+      });
+    }
+  }
 
   return feedback;
 }

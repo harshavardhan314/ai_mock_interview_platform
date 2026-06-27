@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Navbar from "../components/Navbar";
+import { motion } from "framer-motion";
 import {
   Brain,
   BarChart3,
@@ -19,18 +20,56 @@ const Home = () => {
   // State to simulate switching question categories
   const [activeCategory, setActiveCategory] = useState("Behavioral");
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 25 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        type: "spring",
+        stiffness: 90,
+        damping: 15,
+      },
+    },
+  };
+
+  const mockVariants = {
+    hidden: { opacity: 0, scale: 0.96, y: 35 },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      y: 0,
+      transition: {
+        type: "spring",
+        stiffness: 60,
+        damping: 18,
+        delay: 0.25,
+      },
+    },
+  };
+
   const questionLibrary = {
     Behavioral: {
       question:
         "Tell me about a time you handled a difficult stakeholder. What was the situation and how did you approach it?",
       tip: "Use STAR method: Situation → Task → Action → Result. Aim for 90–120 seconds.",
       scores: {
-        clarity: 88,
-        confidence: 74,
-        relevance: 92,
-        conciseness: 67,
-        star: 81,
-        overall: 80,
+        clarity: 8.8,
+        confidence: 7.4,
+        relevance: 9.2,
+        conciseness: 6.7,
+        star: 8.1,
+        overall: 8.0,
       },
     },
     Technical: {
@@ -38,12 +77,12 @@ const Home = () => {
         "How would you design a rate limiter for a distributed system stack handling millions of requests per minute?",
       tip: "Mention Token Bucket or Leaking Bucket algorithms. Discuss Redis cluster integration for state sync.",
       scores: {
-        clarity: 91,
-        confidence: 80,
-        relevance: 85,
-        conciseness: 72,
-        star: 60,
-        overall: 78,
+        clarity: 9.1,
+        confidence: 8.0,
+        relevance: 8.5,
+        conciseness: 7.2,
+        star: 6.0,
+        overall: 7.8,
       },
     },
     "Case Study": {
@@ -51,12 +90,12 @@ const Home = () => {
         "Our active user metric dropped by 12% week-over-week. Walk me through how you'd diagnose the structural root cause.",
       tip: "Isolate segments: platform, geography, traffic source. Distinguish external factors vs internal releases.",
       scores: {
-        clarity: 85,
-        confidence: 88,
-        relevance: 90,
-        conciseness: 79,
-        star: 75,
-        overall: 83,
+        clarity: 8.5,
+        confidence: 8.8,
+        relevance: 9.0,
+        conciseness: 7.9,
+        star: 7.5,
+        overall: 8.3,
       },
     },
     Leadership: {
@@ -64,12 +103,12 @@ const Home = () => {
         "Describe a situation where your team was strongly divided on a technical direction. How did you resolve it?",
       tip: "Focus on data-driven evaluation frameworks, fostering psychological safety, and disagreeing yet committing.",
       scores: {
-        clarity: 89,
-        confidence: 85,
-        relevance: 95,
-        conciseness: 70,
-        star: 88,
-        overall: 85,
+        clarity: 8.9,
+        confidence: 8.5,
+        relevance: 9.5,
+        conciseness: 7.0,
+        star: 8.8,
+        overall: 8.5,
       },
     },
   };
@@ -200,42 +239,47 @@ const Home = () => {
         <Navbar />
 
         {/* --- HERO SECTION WITH PUNCHY, CONVERTING TEXT --- */}
-        <header
+        <motion.header
           id="overview"
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
           className="max-w-7xl mx-auto px-6 md:px-8 pt-16 lg:pt-24 pb-28 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative"
         >
           {/* Left Text Column Area */}
-          <div className="lg:col-span-5 space-y-6 text-left">
-            <div className="inline-flex items-center gap-2 bg-[rgba(134,255,34,0.10)] border border-[rgba(134,255,34,0.25)] px-4 py-1.5 rounded-full">
+          <motion.div className="lg:col-span-5 space-y-6 text-left" variants={containerVariants}>
+            <motion.div className="inline-flex items-center gap-2 bg-[rgba(134,255,34,0.10)] border border-[rgba(134,255,34,0.25)] px-4 py-1.5 rounded-full" variants={itemVariants}>
               <Sparkles className="w-3.5 h-3.5 text-[#86ff22]" />
               <span className="text-[#bdee60] text-[10px] font-bold tracking-widest uppercase">
                 Next-Gen Voice AI Interviewer
               </span>
-            </div>
+            </motion.div>
 
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black leading-[1.12] tracking-tight text-white">
+            <motion.h1 className="text-4xl sm:text-5xl lg:text-6xl font-black leading-[1.12] tracking-tight text-white" variants={itemVariants}>
               Master your next <br />
               interview before <br />
               <span className="bg-gradient-to-r from-[#cfff65] to-[#86ff22] bg-clip-text text-transparent filter drop-shadow-[0_2px_10px_rgba(134,255,34,0.15)]">
                 it even happens.
               </span>
-            </h1>
+            </motion.h1>
 
-            <p className="text-[rgba(255,255,255,0.70)] text-sm md:text-base leading-relaxed max-w-md">
+            <motion.p className="text-[rgba(255,255,255,0.70)] text-sm md:text-base leading-relaxed max-w-md" variants={itemVariants}>
               Practice personalized mock interviews tailored to your resume and
               target role. Receive instant AI feedback, detailed performance
               insights, and actionable recommendations to improve every answer
               before your real interview.
-            </p>
+            </motion.p>
 
-            <div className="space-y-4 pt-2">
+            <motion.div className="space-y-4 pt-2" variants={itemVariants}>
               <div className="flex flex-wrap gap-4">
-                <a
+                <motion.a
                   href="/dashboard"
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.98 }}
                   className="cta-gradient text-black px-8 py-3.5 rounded-full text-sm font-black shadow-xl shadow-[#5cb800]/20 hover:opacity-95 transition-all transform hover:-translate-y-0.5"
                 >
                   Start Your Mock Interview
-                </a>
+                </motion.a>
               </div>
 
               {/* Trust Signal / Social Proof Text */}
@@ -243,11 +287,11 @@ const Home = () => {
                 <span className="text-[#86ff22]">✦</span>
                 Practice smarter. Speak confidently. Get hired faster.
               </div>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
 
           {/* Right Column: High-Fidelity Glassmorphic App Browser Mockup with Premium Mac Title Bar */}
-          <div className="lg:col-span-7 w-full relative">
+          <motion.div className="lg:col-span-7 w-full relative" variants={mockVariants}>
             <div className="animate-float w-full max-w-2xl mx-auto">
               {/* Main Glass Box Window Wrapper */}
               <div className="w-full bg-[rgba(27,32,35,0.62)] backdrop-blur-[14px] rounded-xl border border-white/[0.07] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.85)] overflow-hidden flex flex-col">
@@ -369,8 +413,8 @@ const Home = () => {
                 </div>
               </div>
             </div>
-          </div>
-        </header>
+          </motion.div>
+        </motion.header>
 
         {/* --- STATS OVERLAY GRID BANNER --- */}
         <section className="border-y border-white/[0.05] relative overflow-hidden stats-overlay">
@@ -409,9 +453,19 @@ const Home = () => {
             {features.map((feat, i) => {
               const IconComponent = feat.icon;
               return (
-                <div
+                <motion.div
                   key={i}
-                  className="bg-white/[0.03] border border-white/[0.07] rounded-xl p-8 hover:border-[rgba(134,255,34,0.30)] transition-all duration-300 group"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.4, delay: i * 0.05 }}
+                  whileHover={{ 
+                    y: -6, 
+                    scale: 1.02, 
+                    borderColor: "rgba(134,255,34,0.35)",
+                    boxShadow: "0 15px 30px -10px rgba(134,255,34,0.1)"
+                  }}
+                  className="bg-white/[0.03] border border-white/[0.07] rounded-xl p-8 transition-all duration-300 group cursor-pointer"
                 >
                   <div className="w-10 h-10 bg-[rgba(134,255,34,0.1)] text-[#86ff22] rounded-xl flex items-center justify-center mb-6 group-hover:bg-[rgba(134,255,34,0.2)] transition-all">
                     <IconComponent className="w-5 h-5 text-[#86ff22]" />
@@ -422,7 +476,7 @@ const Home = () => {
                   <p className="text-[rgba(255,255,255,0.55)] text-xs leading-relaxed">
                     {feat.desc}
                   </p>
-                </div>
+                </motion.div>
               );
             })}
           </div>
@@ -470,9 +524,19 @@ const Home = () => {
     desc: "Monitor your progress across interviews and focus on the skills that matter most."
   }
 ].map((item, idx) => (
-              <div
+              <motion.div
                 key={idx}
-                className="bg-white/[0.03] border border-white/[0.07] rounded-xl p-8 relative overflow-hidden group flex flex-col justify-between min-h-[260px]"
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.45, delay: idx * 0.08 }}
+                whileHover={{ 
+                  y: -5, 
+                  scale: 1.015,
+                  borderColor: "rgba(134,255,34,0.3)",
+                  boxShadow: "0 15px 30px -10px rgba(0,0,0,0.5)"
+                }}
+                className="bg-white/[0.03] border border-white/[0.07] rounded-xl p-8 relative overflow-hidden group flex flex-col justify-between min-h-[260px] cursor-pointer transition-colors duration-300"
               >
                 <div className="absolute right-6 top-2 text-[100px] font-black text-white/[0.02] select-none font-mono tracking-tighter transition-all group-hover:text-[#86ff22]/[0.03]">
                   {item.step}
@@ -493,7 +557,7 @@ const Home = () => {
                     <Zap className="w-3 h-3 text-[#bdee60]" /> {item.badge}
                   </span>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </section>
@@ -597,13 +661,13 @@ const Home = () => {
                         {metric.label}
                       </span>
                       <span className="text-[#86ff22] font-mono font-bold">
-                        {metric.value}%
+                        {metric.value}/10
                       </span>
                     </div>
                     <div className="w-full h-2 bg-black/50 rounded-full overflow-hidden p-[1px]">
                       <div
                         className="h-full progress-gradient rounded-full transition-all duration-500 ease-out"
-                        style={{ width: `${metric.value}%` }}
+                        style={{ width: `${metric.value * 10}%` }}
                       ></div>
                     </div>
                   </div>
@@ -616,10 +680,10 @@ const Home = () => {
                     Overall Score
                   </span>
                   <div className="text-3xl font-black text-white font-mono">
-                    {questionLibrary[activeCategory].scores.overall}
+                    {questionLibrary[activeCategory].scores.overall.toFixed(1)}
                     <span className="text-xs text-[rgba(255,255,255,0.35)] font-normal">
                       {" "}
-                      / 100
+                      / 10
                     </span>
                   </div>
                 </div>
