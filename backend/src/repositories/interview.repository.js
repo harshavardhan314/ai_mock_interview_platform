@@ -19,6 +19,7 @@ function parseJsonField(value) {
 function mapRowToInterview(row) {
   return {
     id: row.id,
+    userId: row.user_id,
     role: row.role,
     company: row.company,
     experienceLevel: row.experience_level,
@@ -52,20 +53,21 @@ export async function saveInterview(interview) {
   const result = await query(
     `
       INSERT INTO interviews (
-        id, role, company, experience_level, difficulty, interview_type,
+        id, user_id, role, company, experience_level, difficulty, interview_type,
         duration_minutes, num_questions, resume_text, resume_file_name,
         job_description, questions, answers, current_question_index,
         status, score, feedback, created_at, updated_at, started_at, completed_at
       ) VALUES (
-        $1, $2, $3, $4, $5, $6,
-        $7, $8, $9, $10,
-        $11, $12::jsonb, $13::jsonb, $14,
-        $15, $16, $17, $18, $19, $20, $21
+        $1, $2, $3, $4, $5, $6, $7,
+        $8, $9, $10, $11,
+        $12, $13::jsonb, $14::jsonb, $15,
+        $16, $17, $18, $19, $20, $21, $22
       )
       RETURNING *
     `,
     [
       interview.id,
+      interview.userId ?? "",
       interview.role,
       interview.company,
       interview.experienceLevel,
@@ -97,8 +99,11 @@ export async function getInterview(interviewId) {
   return result.rows[0] ? mapRowToInterview(result.rows[0]) : null;
 }
 
-export async function listInterviews() {
-  const result = await query(`SELECT * FROM interviews ORDER BY created_at DESC`);
+export async function listInterviews(userId) {
+  const result = await query(
+    `SELECT * FROM interviews WHERE user_id = $1 ORDER BY created_at DESC`,
+    [userId]
+  );
   return result.rows.map(mapRowToInterview);
 }
 

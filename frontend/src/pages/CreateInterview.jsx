@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { BriefcaseBusiness, Clock3, FileText, Gauge, Mic, Sparkles, Upload } from "lucide-react";
+import { useAuth } from "@clerk/clerk-react";
 import AppShell from "../components/AppShell";
 import { createInterview } from "../services/interviewApi";
 import { ArrowLeft } from "lucide-react";
@@ -17,6 +18,7 @@ const initialForm = {
 };
 
 function CreateInterview() {
+  const { getToken } = useAuth();
   const [form, setForm] = useState(initialForm);
   const [resumeFile, setResumeFile] = useState(null);
   const [error, setError] = useState("");
@@ -66,7 +68,8 @@ function CreateInterview() {
       formData.append("durationMinutes", String(form.durationMinutes));
       formData.append("jobDescription", form.jobDescription);
 
-      const { interview } = await createInterview(formData);
+      const token = await getToken();
+      const { interview } = await createInterview(formData, token);
       navigate(`/interview/${interview.id}`);
     } catch (submitError) {
       setError(submitError.message || "Could not create interview.");

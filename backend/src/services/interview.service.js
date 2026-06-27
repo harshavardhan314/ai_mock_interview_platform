@@ -54,7 +54,7 @@ export function validateCreatePayload(payload = {}) {
   };
 }
 
-export async function createInterviewSession(payload) {
+export async function createInterviewSession(payload, userId) {
   const validation = validateCreatePayload(payload);
   if (!validation.valid) {
     const error = new Error(validation.message);
@@ -74,6 +74,7 @@ export async function createInterviewSession(payload) {
 
   const interview = {
     id: randomUUID(),
+    userId,
     role: config.role,
     company: config.company,
     experienceLevel: config.experienceLevel,
@@ -99,18 +100,23 @@ export async function createInterviewSession(payload) {
   return saveInterview(interview);
 }
 
-export async function getInterviewSession(interviewId) {
+export async function getInterviewSession(interviewId, userId) {
   const interview = await getInterview(interviewId);
   if (!interview) {
     const error = new Error("Interview session not found.");
     error.statusCode = 404;
     throw error;
   }
+  if (interview.userId && interview.userId !== userId) {
+    const error = new Error("Unauthorized access to this interview session.");
+    error.statusCode = 403;
+    throw error;
+  }
   return interview;
 }
 
-export async function startInterviewSession(interviewId) {
-  const interview = await getInterviewSession(interviewId);
+export async function startInterviewSession(interviewId, userId) {
+  const interview = await getInterviewSession(interviewId, userId);
 
   if (interview.status === "completed") {
     const error = new Error("This interview is already completed.");
@@ -136,8 +142,8 @@ export async function startInterviewSession(interviewId) {
   };
 }
 
-export async function saveInterviewAnswer(interviewId, answerPayload = {}) {
-  const interview = await getInterviewSession(interviewId);
+export async function saveInterviewAnswer(interviewId, answerPayload = {}, userId) {
+  const interview = await getInterviewSession(interviewId, userId);
 
   if (interview.status === "completed") {
     const error = new Error("This interview is already completed.");
@@ -187,12 +193,12 @@ export async function saveInterviewAnswer(interviewId, answerPayload = {}) {
   };
 }
 
-export async function listInterviewSessions() {
-  return listAllInterviews();
+export async function listInterviewSessions(userId) {
+  return listAllInterviews(userId);
 }
 
-export async function completeInterviewSession(interviewId) {
-  const interview = await getInterviewSession(interviewId);
+export async function completeInterviewSession(interviewId, userId) {
+  const interview = await getInterviewSession(interviewId, userId);
 
   if (interview.status !== "completed") {
     const error = new Error("Interview must be completed before generating feedback.");

@@ -1,5 +1,6 @@
 import cors from "cors";
 import express from "express";
+import { clerkMiddleware } from "@clerk/express";
 import { env } from "./config/env.js";
 import { runMigrations } from "./db/migrate.js";
 import { pool } from "./db/pool.js";
@@ -9,9 +10,23 @@ import voiceAgentRoutes from "./routes/voiceAgent.routes.js";
 
 const app = express();
 
+app.use(clerkMiddleware());
+
+const allowedOrigins = (process.env.CLIENT_URL || "http://localhost:5173")
+  .split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+
 app.use(
   cors({
-    origin: env.clientUrl,
+    origin(origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+        return;
+      }
+
+      callback(new Error(`CORS blocked for origin: ${origin}`));
+    },
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization", "X-Debug-Session-Id"],
   })

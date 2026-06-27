@@ -9,7 +9,11 @@ import {
   uploadResume,
 } from "../controllers/interview.controller.js";
 
+import { requireAuth } from "../middleware/auth.js";
+
 const router = Router();
+
+router.use(requireAuth);
 
 router.get("/", listInterviews);
 router.post("/", uploadResume, createInterview);

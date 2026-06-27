@@ -17,7 +17,7 @@ export const uploadResume = upload.single("resume");
 
 export async function listInterviews(req, res, next) {
   try {
-    const interviews = await listInterviewSessions();
+    const interviews = await listInterviewSessions(req.userId);
     res.json({ interviews });
   } catch (error) {
     next(error);
@@ -37,7 +37,7 @@ export async function createInterview(req, res, next) {
       jobDescription: req.body.jobDescription,
     };
 
-    const interview = await createInterviewSession(payload);
+    const interview = await createInterviewSession(payload, req.userId);
     res.status(201).json({ interview });
   } catch (error) {
     next(error);
@@ -46,7 +46,7 @@ export async function createInterview(req, res, next) {
 
 export async function getInterview(req, res, next) {
   try {
-    const interview = await getInterviewSession(req.params.interviewId);
+    const interview = await getInterviewSession(req.params.interviewId, req.userId);
     res.json({ interview });
   } catch (error) {
     next(error);
@@ -55,7 +55,7 @@ export async function getInterview(req, res, next) {
 
 export async function startInterview(req, res, next) {
   try {
-    const result = await startInterviewSession(req.params.interviewId);
+    const result = await startInterviewSession(req.params.interviewId, req.userId);
     res.json(result);
   } catch (error) {
     next(error);
@@ -64,7 +64,7 @@ export async function startInterview(req, res, next) {
 
 export async function saveAnswer(req, res, next) {
   try {
-    const result = await saveInterviewAnswer(req.params.interviewId, req.body);
+    const result = await saveInterviewAnswer(req.params.interviewId, req.body, req.userId);
     res.json(result);
   } catch (error) {
     next(error);
@@ -73,7 +73,7 @@ export async function saveAnswer(req, res, next) {
 
 export async function completeInterview(req, res, next) {
   try {
-    const result = await completeInterviewSession(req.params.interviewId);
+    const result = await completeInterviewSession(req.params.interviewId, req.userId);
     res.json(result);
   } catch (error) {
     next(error);

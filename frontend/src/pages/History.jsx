@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
+import { useAuth } from "@clerk/clerk-react";
 import AppShell from "../components/AppShell";
 import InterviewSummaryCard from "../components/InterviewSummaryCard";
 import { listInterviews } from "../services/interviewApi";
 
 function History() {
+  const { getToken } = useAuth();
   const [interviews, setInterviews] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
@@ -15,7 +17,8 @@ function History() {
 
     async function loadHistory() {
       try {
-        const data = await listInterviews();
+        const token = await getToken();
+        const data = await listInterviews(token);
         if (!cancelled) {
           setInterviews(data.interviews ?? []);
         }
@@ -34,7 +37,7 @@ function History() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [getToken]);
 
   return (
     <AppShell>

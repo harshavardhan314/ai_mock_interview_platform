@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useUser } from "@clerk/clerk-react";
+import { useUser, useAuth } from "@clerk/clerk-react";
 import { Link } from "react-router-dom";
 import { BarChart3, FileText, History, PlusCircle } from "lucide-react";
 import AppShell from "../components/AppShell";
@@ -9,6 +9,7 @@ import { listInterviews } from "../services/interviewApi";
 
 function Dashboard() {
   const { user } = useUser();
+  const { getToken } = useAuth();
   const [interviews, setInterviews] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -17,7 +18,8 @@ function Dashboard() {
 
     async function loadInterviews() {
       try {
-        const data = await listInterviews();
+        const token = await getToken();
+        const data = await listInterviews(token);
         if (!cancelled) {
           setInterviews(data.interviews ?? []);
         }
@@ -36,7 +38,7 @@ function Dashboard() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [getToken]);
 
   const completed = interviews.filter((interview) => interview.status === "completed");
   const averageScore = completed.length

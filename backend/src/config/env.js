@@ -22,4 +22,6 @@ export const env = {
   databaseUrl:
     process.env.DATABASE_URL ||
     "postgresql://interview:interview@localhost:5432/ai_mock_interview",
+  clerkPublishableKey: process.env.CLERK_PUBLISHABLE_KEY?.trim() || "",
+  clerkSecretKey: process.env.CLERK_SECRET_KEY?.trim() || "",
 };

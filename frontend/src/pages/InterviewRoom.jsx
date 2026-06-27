@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { CheckCircle2, Clock3, Loader2, Mic, MicOff, Send, Volume2 } from "lucide-react";
+import { useAuth } from "@clerk/clerk-react";
 import AppShell from "../components/AppShell";
 import {
   completeInterview,
@@ -13,6 +14,7 @@ import { requestVoiceAgentResponse } from "../services/voiceAgentApi";
 function InterviewRoom() {
   const { interviewId } = useParams();
   const navigate = useNavigate();
+  const { getToken } = useAuth();
 
   const [interview, setInterview] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -57,11 +59,12 @@ function InterviewRoom() {
       setLoadError("");
 
       try {
-        const remote = await fetchInterview(interviewId);
+        const token = await getToken();
+        const remote = await fetchInterview(interviewId, token);
         let session = remote.interview;
 
         if (session.status !== "completed") {
-          const started = await startInterview(interviewId);
+          const started = await startInterview(interviewId, token);
           session = started.interview;
         }
 
@@ -99,7 +102,7 @@ function InterviewRoom() {
         clearInterval(timerRef.current);
       }
     };
-  }, [interviewId]);
+  }, [interviewId, getToken]);
 
   useEffect(() => {
     if (remainingSeconds === null || remainingSeconds <= 0) return;
@@ -154,7 +157,8 @@ function InterviewRoom() {
     if (!answerText.trim() || !currentQuestion) return;
 
     try {
-      const result = await saveInterviewAnswer(interviewId, answerText.trim());
+      const token = await getToken();
+      const result = await saveInterviewAnswer(interviewId, answerText.trim(), token);
       const updatedInterview = result.interview;
 
       setInterview(updatedInterview);
@@ -164,7 +168,7 @@ function InterviewRoom() {
 
       if (result.isComplete) {
         setIsGeneratingFeedback(true);
-        await completeInterview(interviewId);
+        await completeInterview(interviewId, token);
         navigate(`/feedback/${interviewId}`);
         return;
       }
@@ -232,6 +236,7 @@ function InterviewRoom() {
       });
 
       const nextQuestion = interview.questions[currentIndex + 1];
+      const token = await getToken();
 
       const result = await requestVoiceAgentResponse({
         audioBlob,
@@ -249,7 +254,7 @@ function InterviewRoom() {
           questionNumber: currentIndex + 1,
           totalQuestions: interview.questions.length,
         },
-      });
+      }, token);
 
       setDraft(result.transcript);
       setLastAiResponse(result.aiResponse);

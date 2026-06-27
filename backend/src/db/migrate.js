@@ -4,6 +4,7 @@ export async function runMigrations() {
   await query(`
     CREATE TABLE IF NOT EXISTS interviews (
       id UUID PRIMARY KEY,
+      user_id VARCHAR(255) DEFAULT '',
       role VARCHAR(255) NOT NULL,
       company VARCHAR(255) DEFAULT '',
       experience_level VARCHAR(50) NOT NULL DEFAULT 'Mid-level',
@@ -27,7 +28,17 @@ export async function runMigrations() {
     )
   `);
 
+  // Migration for existing tables
+  await query(`
+    ALTER TABLE interviews 
+    ADD COLUMN IF NOT EXISTS user_id VARCHAR(255) DEFAULT ''
+  `);
+
   await query(`
     CREATE INDEX IF NOT EXISTS idx_interviews_status ON interviews (status)
+  `);
+
+  await query(`
+    CREATE INDEX IF NOT EXISTS idx_interviews_user_id ON interviews (user_id)
   `);
 }

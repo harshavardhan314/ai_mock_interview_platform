@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { ArrowLeft, CheckCircle2, Loader2 } from "lucide-react";
+import { useAuth } from "@clerk/clerk-react";
 import AppShell from "../components/AppShell";
 import MetricCard from "../components/MetricCard";
 import { getInterview } from "../services/interviewApi";
 
 function Feedback() {
   const { interviewId } = useParams();
+  const { getToken } = useAuth();
   const [interview, setInterview] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
@@ -16,7 +18,8 @@ function Feedback() {
 
     async function loadFeedback() {
       try {
-        const data = await getInterview(interviewId);
+        const token = await getToken();
+        const data = await getInterview(interviewId, token);
         if (!cancelled) {
           setInterview(data.interview);
         }
@@ -35,7 +38,7 @@ function Feedback() {
     return () => {
       cancelled = true;
     };
-  }, [interviewId]);
+  }, [interviewId, getToken]);
 
   if (isLoading) {
     return (

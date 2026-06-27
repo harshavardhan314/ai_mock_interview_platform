@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
+import { useAuth } from "@clerk/clerk-react";
 import AppShell from "../components/AppShell";
 import MetricCard from "../components/MetricCard";
 import { listInterviews } from "../services/interviewApi";
 
 function Analytics() {
+  const { getToken } = useAuth();
   const [completed, setCompleted] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -14,7 +16,8 @@ function Analytics() {
 
     async function loadAnalytics() {
       try {
-        const data = await listInterviews();
+        const token = await getToken();
+        const data = await listInterviews(token);
         if (!cancelled) {
           setCompleted((data.interviews ?? []).filter((interview) => interview.status === "completed"));
         }
@@ -29,7 +32,7 @@ function Analytics() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [getToken]);
 
   const average = (key) =>
     completed.length
