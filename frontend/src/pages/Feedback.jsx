@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { ArrowLeft, CheckCircle2, Loader2 } from "lucide-react";
+import { ArrowLeft, CheckCircle2, Loader2, Sparkles } from "lucide-react";
 import { useAuth } from "@clerk/clerk-react";
 import AppShell from "../components/AppShell";
 import MetricCard from "../components/MetricCard";
