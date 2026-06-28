@@ -131,6 +131,22 @@ function CreateInterview() {
 
   return (
     <AppShell>
+      <style>{`
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover,
+        input:-webkit-autofill:focus,
+        textarea:-webkit-autofill,
+        select:-webkit-autofill {
+          -webkit-box-shadow: 0 0 0px 1000px #070a05 inset !important;
+          -webkit-text-fill-color: #ffffff !important;
+          caret-color: #ffffff;
+          border-color: rgba(255,255,255,0.10) !important;
+        }
+        select option {
+          background-color: #0d1109;
+          color: #ffffff;
+        }
+      `}</style>
       <section className="max-w-4xl">
 
         <Link to="/dashboard" className="inline-flex items-center gap-2 text-sm font-bold text-white/55 hover:text-[#86ff22] mb-10">
@@ -160,7 +176,8 @@ function CreateInterview() {
                   onChange={updateField}
                   required
                   placeholder="Software Engineer"
-                  className="w-full rounded-xl border border-white/10 bg-[#070a05] px-4 py-3 text-sm outline-none focus:border-[#86ff22]"
+                  className="w-full rounded-xl border border-white/10 bg-[#070a05] px-4 py-3 text-sm text-white placeholder:text-white/30 outline-none focus:border-[#86ff22] transition-colors"
+                  style={{ colorScheme: 'dark' }}
                 />
               </label>
               <label className="space-y-2">
@@ -170,7 +187,8 @@ function CreateInterview() {
                   value={form.company}
                   onChange={updateField}
                   placeholder="Example: Google, Zoho, TCS"
-                  className="w-full rounded-xl border border-white/10 bg-[#070a05] px-4 py-3 text-sm outline-none focus:border-[#86ff22]"
+                  className="w-full rounded-xl border border-white/10 bg-[#070a05] px-4 py-3 text-sm text-white placeholder:text-white/30 outline-none focus:border-[#86ff22] transition-colors"
+                  style={{ colorScheme: 'dark' }}
                 />
               </label>
               <label className="space-y-2">
@@ -179,7 +197,8 @@ function CreateInterview() {
                   name="experienceLevel"
                   value={form.experienceLevel}
                   onChange={updateField}
-                  className="w-full rounded-xl border border-white/10 bg-[#070a05] px-4 py-3 text-sm outline-none focus:border-[#86ff22]"
+                  className="w-full rounded-xl border border-white/10 bg-[#070a05] px-4 py-3 text-sm text-white outline-none focus:border-[#86ff22] transition-colors"
+                  style={{ colorScheme: 'dark' }}
                 >
                   <option>Entry-level</option>
                   <option>Mid-level</option>
@@ -192,7 +211,8 @@ function CreateInterview() {
                   name="difficulty"
                   value={form.difficulty}
                   onChange={updateField}
-                  className="w-full rounded-xl border border-white/10 bg-[#070a05] px-4 py-3 text-sm outline-none focus:border-[#86ff22]"
+                  className="w-full rounded-xl border border-white/10 bg-[#070a05] px-4 py-3 text-sm text-white outline-none focus:border-[#86ff22] transition-colors"
+                  style={{ colorScheme: 'dark' }}
                 >
                   <option>Easy</option>
                   <option>Medium</option>
@@ -205,7 +225,8 @@ function CreateInterview() {
                   name="durationMinutes"
                   value={form.durationMinutes}
                   onChange={updateField}
-                  className="w-full rounded-xl border border-white/10 bg-[#070a05] px-4 py-3 text-sm outline-none focus:border-[#86ff22]"
+                  className="w-full rounded-xl border border-white/10 bg-[#070a05] px-4 py-3 text-sm text-white outline-none focus:border-[#86ff22] transition-colors"
+                  style={{ colorScheme: 'dark' }}
                 >
                   <option value={15}>15 minutes</option>
                   <option value={30}>30 minutes</option>
@@ -249,7 +270,8 @@ function CreateInterview() {
                   rows={7}
                   required
                   placeholder="Paste the job description, responsibilities, and required skills."
-                  className="w-full resize-none rounded-xl border border-white/10 bg-[#070a05] px-4 py-3 text-sm leading-6 outline-none focus:border-[#86ff22]"
+                  className="w-full resize-none rounded-xl border border-white/10 bg-[#070a05] px-4 py-3 text-sm text-white placeholder:text-white/30 leading-6 outline-none focus:border-[#86ff22] transition-colors"
+                  style={{ colorScheme: 'dark' }}
                 />
               </label>
             </div>
